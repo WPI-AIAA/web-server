@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		kotlinVersion = '1.2.31'
+		kotlinVersion = '1.2.51'
 		springBootVersion = '2.0.0.RELEASE'
 	}
 	repositories {
@@ -39,7 +39,6 @@ compileTestKotlin {
 repositories {
 	mavenCentral()
 }
-
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
