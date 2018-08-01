@@ -20,12 +20,11 @@ class ImageController @Autowired constructor(){
         // Source Directory for images
         val directory = File("src/main/resources/files/images")
 
-        // List of file names to return
+        // List of image names to return
         val imageList = ArrayList<String>()
 
         // If the folder doesn't exist then neither do the images
         if(!directory.isDirectory){
-            imageList.add("Not a Directory")
             return imageList
         }
 
@@ -50,6 +49,11 @@ class ImageController @Autowired constructor(){
 
         // General Source Directory
         val directory = "src/main/resources/files/images"
+
+        // Check the file exists
+        if(!File(directory + '/' + fileName).exists()){
+            return ResponseEntity.noContent().build()
+        }
 
         // Grab the file extension
         val extension = fileName.substring(fileName.lastIndexOf('.') + 1)
