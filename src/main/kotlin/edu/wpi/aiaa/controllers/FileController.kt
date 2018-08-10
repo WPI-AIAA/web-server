@@ -47,17 +47,17 @@ class FileController @Autowired constructor(){
     @ResponseBody
     fun getUSLIFile(@RequestParam(required = true) filePath: String): ResponseEntity<ByteArray>{
 
-        val target = File(directory + '/' + filePath)
+        val target = File("$directory/$filePath")
 
         if(!target.exists()){
             return ResponseEntity.noContent().build()
         }
 
         // Extract the file extension
-        val ext = filePath.substring(filePath.lastIndexOf('.') + 1)
+        val ext = filePath.substring(filePath.lastIndexOf('.') + 1).toLowerCase()
 
         // If the file is a pdf send it as one
-        if(ext == "pdf" || ext == "PDF"){
+        if(ext == "pdf"){
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF).body(target.readBytes())
         }
 
