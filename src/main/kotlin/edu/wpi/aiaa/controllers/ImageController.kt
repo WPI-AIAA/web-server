@@ -12,30 +12,32 @@ import java.io.File
 @RequestMapping("/images")
 class ImageController @Autowired constructor(){
 
+    // Root Source for Files
+    val directory = "src/main/resources/files/images"
 
     @GetMapping("/home")
     @ResponseBody
     fun getImageNames(): Iterable<String>{
 
         // Source Directory for images
-        val directory = File("src/main/resources/files/images")
+        // val directory = File("src/main/resources/files/images")
 
         // List of image names to return
         val imageList = ArrayList<String>()
 
         // If the folder doesn't exist then neither do the images
-        if(!directory.isDirectory){
+        if(!File(directory).isDirectory){
             return imageList
         }
 
         // Grab the names from each file
-        directory.listFiles().forEach {
+        File(directory).listFiles().forEach {
 
             // Extract the file extension
-            val ext = it.name.substring(it.name.lastIndexOf('.') + 1)
+            val ext = it.name.substring(it.name.lastIndexOf('.') + 1).toLowerCase()
 
             // Only return files that are images
-            if(ext == "png" || ext == "PNG" || ext == "jpg" || ext == "JPG" || ext == "jpeg" || ext == "JPEG" || ext == "gif" || ext == "GIF"){
+            if(ext == "png" || ext == "jpg" || ext == "jpeg" || ext == "gif"){
                 imageList.add(it.name)
             }
         }
@@ -43,32 +45,28 @@ class ImageController @Autowired constructor(){
         return imageList
     }
 
-    @GetMapping("/home/{fileName}")
+    @GetMapping("/home/image")
     @ResponseBody
-    fun getHomeImage(@PathVariable fileName: String): ResponseEntity<ByteArray>{
+    fun getHomeImage(@RequestParam(required = true) fileName: String): ResponseEntity<ByteArray>{
 
-        // General Source Directory
-        val directory = "src/main/resources/files/images"
+        val target = File("$directory/$fileName")
 
-        // Check the file exists
-        if(!File(directory + '/' + fileName).exists()){
+        if(!target.exists()){
             return ResponseEntity.noContent().build()
         }
 
-        // Grab the file extension
-        val extension = fileName.substring(fileName.lastIndexOf('.') + 1)
+        // Extract the file extension
+        val ext = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase()
 
-        // Determine the image file type and send it
-        if(extension == "png" || extension == "PNG"){
-            return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(File(directory + '/' + fileName).readBytes())
-        } else if(extension == "jpg" || extension == "JPG" || extension == "jpeg" || extension == "JPEG"){
-            return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(File(directory + '/' + fileName).readBytes())
-        } else if(extension == "gif" || extension == "GIF"){
-            return ResponseEntity.ok().contentType(MediaType.IMAGE_GIF).body(File(directory + '/' + fileName).readBytes())
+        // Determine the file type and send it
+        if(ext == "png"){
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG ).body(File("$directory/$fileName").readBytes())
+        } else if(ext == "jpg" || ext == "jpeg"){
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(File("$directory/$fileName").readBytes())
+        } else if(ext == "gif"){
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_GIF ).body(File("$directory/$fileName").readBytes())
         }
 
-        // TODO: Send proper error response
         return ResponseEntity.noContent().build()
     }
-
 }
