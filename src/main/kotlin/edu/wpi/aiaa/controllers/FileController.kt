@@ -16,13 +16,13 @@ class FileController @Autowired constructor(){
 
     @GetMapping("/usli")
     @ResponseBody
-    fun getFileNames(): String {
+    fun getFileNames(): ResponseEntity<String> {
 
         // Idiot Check
         if(File(directory).isDirectory){
-            return iterateDirectory(File(directory))
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(iterateDirectory(File(directory)))
         } else {
-            return ""
+            return ResponseEntity.noContent().build()
         }
     }
 
@@ -30,8 +30,6 @@ class FileController @Autowired constructor(){
     fun iterateDirectory(source: File): String {
 
         val result = ArrayList<String>()
-
-        // TODO: JSON Formatting
 
         source.listFiles().forEach {
             if (it.isDirectory) {
@@ -44,8 +42,6 @@ class FileController @Autowired constructor(){
 
         return result.toString()
     }
-
-//    return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body("[\"main-example.pdf\", \"sub-directory-1\", [\"sub-example-1.pdf\", \"sub-example-2.pdf\"]]");
 
     @GetMapping("/usli/element")
     @ResponseBody
@@ -67,7 +63,7 @@ class FileController @Autowired constructor(){
 
         return ResponseEntity
                 .ok()
-                .header("Content-Disposition", "attachment; filename=" + '"' + filePath.substring(filePath.lastIndexOf('/') + 1) + '"')
+                .header("Content-Disposition", "attachment; filename=" + '"' + filePath.substring(filePath.lastIndexOf('/') + 1) + '"') // Sets file name that user sees when prompted for a download
                 .contentType(MediaType.TEXT_PLAIN)
                 .body(target.readBytes())
     }
