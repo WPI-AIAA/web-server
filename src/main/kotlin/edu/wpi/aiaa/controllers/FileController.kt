@@ -8,11 +8,12 @@ import org.springframework.web.bind.annotation.*
 import java.io.File
 
 @Controller
+@CrossOrigin
 @RequestMapping("/files")
 class FileController @Autowired constructor(){
 
     // Root Source for Files
-    val directory = "src/main/resources/files/usli"
+    val directory = "src/main/resources/files/samples"
 
     @GetMapping("/usli")
     @ResponseBody
