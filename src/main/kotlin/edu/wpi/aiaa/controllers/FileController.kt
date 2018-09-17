@@ -13,7 +13,7 @@ import java.io.File
 class FileController @Autowired constructor(){
 
     // Root Source for Files
-    val directory = "/home/robaire/Documents/FAKEUSLI"
+    val directory = "src/main/resources/files/usli"
 
     data class FileTreeElement(val name: String, val path: String, val type: String, val children: ArrayList<FileTreeElement> = ArrayList())
 
