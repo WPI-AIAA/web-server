@@ -13,35 +13,43 @@ import java.io.File
 class FileController @Autowired constructor(){
 
     // Root Source for Files
-    val directory = "src/main/resources/files/samples"
+    val directory = "/home/robaire/Documents/FAKEUSLI"
+
+    data class FileTreeElement(val name: String, val path: String, val type: String, val children: ArrayList<FileTreeElement> = ArrayList())
 
     @GetMapping("/usli")
     @ResponseBody
-    fun getFileNames(): ResponseEntity<String> {
+    fun getFileNames(): ResponseEntity<FileTreeElement> {
+
+        val rootFile = File(directory)
 
         // Idiot Check
-        if(File(directory).isDirectory){
-            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(iterateDirectory(File(directory)))
-        } else {
+        if(!rootFile.exists()){
+            // Not a valid file
             return ResponseEntity.noContent().build()
+        } else {
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(iterateFileTree(rootFile))
         }
     }
 
-    // Sufficiently large tree structures might cause recursion issues
-    fun iterateDirectory(source: File): String {
+    fun iterateFileTree(rootFile: File): FileTreeElement {
 
-        val result = ArrayList<String>()
+        if(!rootFile.isDirectory){
 
-        source.listFiles().forEach {
-            if (it.isDirectory) {
-                result.add('"' + it.name + '"')
-                result.add(iterateDirectory(it))
-            } else if (it.isFile) {
-                result.add('"' + it.name + '"')
+            // Extract the file extension
+            val ext = rootFile.name.substring(rootFile.name.lastIndexOf('.') + 1).toLowerCase()
+
+            return FileTreeElement(rootFile.name, rootFile.path.substring(directory.length),"file")
+        } else {
+            val children = ArrayList<FileTreeElement>()
+
+            rootFile.listFiles().forEach {
+                children.add(iterateFileTree(it))
             }
+
+            return FileTreeElement(rootFile.name, rootFile.path.substring(directory.length), "directory", children)
         }
 
-        return result.toString()
     }
 
     @GetMapping("/usli/element")
