@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		kotlinVersion = '1.2.60'
+		kotlinVersion = '1.2.70'
 		springBootVersion = '2.0.0.RELEASE'
 	}
 	repositories {
@@ -20,7 +20,7 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
 group = 'edu.wpi.aiaa'
-version = '0.0.1-SNAPSHOT'
+version = '0.1.1'
 
 sourceCompatibility = 1.8
 compileKotlin {
@@ -47,6 +47,10 @@ dependencies {
 	compile("org.jetbrains.kotlin:kotlin-reflect")
 	compile 'org.springframework.boot:spring-boot-starter-data-jpa'
 	compile('org.springframework.data:spring-data-jpa:2.0.5.RELEASE')
+
+	compile 'com.google.api-client:google-api-client:1.23.0'
+	compile 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
+	compile 'com.google.apis:google-api-services-drive:v3-rev110-1.23.0'
 
 	runtime('mysql:mysql-connector-java')
 
