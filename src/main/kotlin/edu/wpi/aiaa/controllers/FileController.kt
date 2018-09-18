@@ -13,7 +13,7 @@ import java.io.File
 class FileController @Autowired constructor(){
 
     // Root Source for Files
-    val directory = "src/main/resources/files/usli"
+    val directory = "src/main/resources/files/USLI"
 
     data class FileTreeElement(val name: String, val path: String, val type: String, val children: ArrayList<FileTreeElement> = ArrayList())
 
@@ -52,9 +52,14 @@ class FileController @Autowired constructor(){
 
     }
 
-    @GetMapping("/usli/element")
+    @GetMapping("/usli/get")
     @ResponseBody
     fun getUSLIFile(@RequestParam(required = true) filePath: String): ResponseEntity<ByteArray>{
+
+        // This way a request cannot travel up the file tree /../../../
+        if(filePath.contains("..")){
+            return ResponseEntity.noContent().build()
+        }
 
         val target = File("$directory/$filePath")
 
