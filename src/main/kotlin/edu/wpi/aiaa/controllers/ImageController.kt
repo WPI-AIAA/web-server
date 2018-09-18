@@ -45,9 +45,14 @@ class ImageController @Autowired constructor(){
         return imageList
     }
 
-    @GetMapping("/home/image")
+    @GetMapping("/home/get")
     @ResponseBody
     fun getHomeImage(@RequestParam(required = true) fileName: String): ResponseEntity<ByteArray>{
+
+        // This way a request cannot travel up the file tree /../../../
+        if(fileName.contains("..")){
+            return ResponseEntity.noContent().build()
+        }
 
         val target = File("$directory/$fileName")
 
